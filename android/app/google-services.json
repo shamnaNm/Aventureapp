@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818288441092",
+    "project_id": "aventure-485f1",
+    "storage_bucket": "aventure-485f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818288441092:android:e6473928ef3b2098584251",
+        "android_client_info": {
+          "package_name": "com.example.aventure"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP2ZnQrs_DEkPHG6OZ-Udu6KHMYrtHvK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
