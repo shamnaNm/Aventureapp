@@ -1,52 +1,50 @@
-import 'package:aventure/models/offer_model.dart';
+import 'package:aventure/models/activity_model.dart';
+import 'package:aventure/models/booking_model.dart';
+import 'package:aventure/screens/admin/Allviewbookings.dart';
+import 'package:aventure/screens/admin/add_catrogry.dart';
+import 'package:aventure/screens/admin/allactivitypage.dart';
+import 'package:aventure/screens/admin/dashboard.dart';
+import 'package:aventure/screens/admin/eventmanager_page.dart';
+import 'package:aventure/screens/admin/notification.dart';
+import 'package:aventure/screens/admin/users_page.dart';
+import 'package:aventure/screens/event_manager/Addbannerpage.dart';
+import 'package:aventure/screens/event_manager/addactivity.dart';
+import 'package:aventure/screens/event_manager/allcreatedactivity.dart';
 import 'package:aventure/screens/event_manager/event_home.dart';
 import 'package:aventure/screens/event_manager/event_reg.dart';
 import 'package:aventure/banner/offer_page.dart';
 import 'package:aventure/screens/common/splash_page.dart';
-import 'package:aventure/screens/user/air_category.dart';
-import 'package:aventure/screens/user/category_pages.dart';
+import 'package:aventure/screens/event_manager/eventmanager_profile.dart';
+import 'package:aventure/screens/event_manager/gen_tickets.dart';
+import 'package:aventure/screens/event_manager/bookinglist.dart';
+import 'package:aventure/screens/event_manager/listtickets.dart';
+import 'package:aventure/screens/user/mybookings.dart';
+import 'package:aventure/screens/user/mypayments.dart';
+import 'package:aventure/screens/user/tickets.dart';
+import 'package:aventure/screens/user/categorypage.dart';
+import 'package:aventure/screens/user/history.dart';
 import 'package:aventure/screens/user/medinfo.dart';
-import 'package:aventure/screens/user/mountain_category.dart';
-import 'package:aventure/screens/user/road_category.dart';
+import 'package:aventure/screens/user/paymentpage.dart';
+import 'package:aventure/screens/user/privacypolicy.dart';
 import 'package:aventure/rating/view_reviews.dart';
-import 'package:aventure/screens/user/water/Activity_Booking.dart';
-import 'package:aventure/screens/user/water/activity.dart';
-import 'package:aventure/screens/user/air/activity10.dart';
-import 'package:aventure/screens/user/air/activity11.dart';
-import 'package:aventure/screens/user/air/activity12.dart';
-import 'package:aventure/screens/user/water/activity2.dart';
-import 'package:aventure/screens/user/water/activity3.dart';
-import 'package:aventure/screens/user/mountain/activity4.dart';
-import 'package:aventure/screens/user/mountain/activity5.dart';
-import 'package:aventure/screens/user/mountain/activity6.dart';
-import 'package:aventure/screens/user/road/activity7.dart';
-import 'package:aventure/screens/user/road/activity8.dart';
-import 'package:aventure/screens/user/road/activity9.dart';
-import 'package:aventure/screens/user/water/activity_three_booking.dart';
-import 'package:aventure/screens/user/water/activity_two_booking.dart';
-import 'package:aventure/screens/user/air/bookin11.dart';
-import 'package:aventure/screens/user/air/booking10.dart';
-import 'package:aventure/screens/user/road/booking9.dart';
-import 'package:aventure/screens/user/road/booking_7.dart';
-import 'package:aventure/screens/user/road/booking_8.dart';
-import 'package:aventure/screens/user/mountain/booking_five.dart';
-import 'package:aventure/screens/user/mountain/booking_four.dart';
-import 'package:aventure/screens/user/mountain/booking_six.dart';
-import 'package:aventure/screens/user/air/bookingg12.dart';
+import 'package:aventure/screens/user/termcondition.dart';
+import 'package:aventure/screens/user/Activity_Booking.dart';
+import 'package:aventure/screens/user/activity.dart';
 import 'package:aventure/screens/user/bottom_navigation.dart';
 import 'package:aventure/screens/user/explore_page.dart';
 import 'package:aventure/screens/user/home_page.dart';
 import 'package:aventure/screens/user/personal_info.dart';
 import 'package:aventure/screens/user/profile.dart';
-import 'package:aventure/screens/user/review.dart';
 import 'package:aventure/screens/user/user_register_page.dart';
-import 'package:aventure/screens/user/water_category.dart';
+import 'package:aventure/screens/user/userreviews.dart';
 import 'package:flutter/material.dart';
 import 'package:aventure/screens/common/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'banner/addbanner.dart';
 import 'firebase_options.dart';
-
+import 'screens/common/splash2.dart';
+import 'screens/user/generatereview.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -54,86 +52,56 @@ void main() async {
   );
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/activitybooking',
+      initialRoute: '/',
       routes: {
-        // '/': (context) => const SplashPage(),
-        // '/login': (context) => LoginPage(),
-        // '/register': (context) => RegisterPage(),
-        // '/eventregister': (context) => EventManagerRegisterPage(),
+        '/': (context) => const SplashPage(),
+        '/splash2': (context) => SplashTwoPage(),
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/eventregister': (context) => EventManagerRegisterPage(),
+        '/admin': (context) => AdminDashboard(),
+        '/listactivity': (context) => AllActivityListPage(),
+        '/listbooking': (context) => AllBookingListPage(),
+
+        '/userpage': (context) => UserPage(),
+        '/eventmanagerpage': (context) => EventManagerPage(),
+        '/notifyaccess': (context) => NotificationAccess(),
         '/eventhome': (context) => EventManagerHome(),
+        '/addbanners': (context) => AddBannerPage(),
+        '/addactivity': (context) => ActivityManager(),
+        '/allactivity': (context) => AllCreatedActivitiesPage(),
+        '/eventerprofile': (context) => EventersProfile(),
+        '/viewbookings': (context) => BookingsPage(),
         '/navigation': (context) => BottomNavigationPage(),
         '/home': (context) => HomePage(),
         '/explore': (context) => ExplorePage(),
-        '/category': (context) => CategoryPage(),
-        '/water': (context) => WaterCatogoryPage(),
-        '/mountain': (context) => MountainCatogoryPage(),
-        '/road': (context) => RoadCatogoryPage(),
-        '/air': (context) => AirCatogoryPage(),
+        '/category': (context) => CategoriesPage(),
+        '/tickets': (context) =>PdfListPage(),
         '/profile': (context) => ProfilePage(),
         '/personalinfo': (context) => PersonalInfo(),
-        '/activity1': (context) => ActivityPage(),
-        '/activity2': (context) => ActivityTwoPage(),
-        '/activity3': (context) => ActivityThreePage(),
-        '/activity4': (context) => ActivityFourPage(),
-        '/activity5': (context) => ActivityFivePage(),
-        '/activity6': (context) => ActivitySixPage(),
-        '/activity7': (context) => ActivitySevenPage(),
-        '/activity8': (context) => ActivityEightPage(),
-        '/activity9': (context) => ActivityNinePage(),
-        '/activity10': (context) => ActivityTenPage(),
-        '/activity11': (context) => ActivityElevenPage(),
-        '/activity12': (context) => ActivityTwelvePage(),
-
+        '/privacy': (context) => PrivacyPolicyPage(),
+        '/termc': (context) => TermsConditionsPage(),
+        '/reviewuser': (context) =>  UserReviewsPage(),
+        '/activity1': (context) => ActivityPage(
+              activity: ActivityModel(),
+            ),
         '/activitybooking': (context) => ActivityBooking(
-              title: '',
-            ),
-        '/booking4': (context) => ActivityFourBooking(
-              title: '',
-            ),
-        '/booking5': (context) => ActivityFiveBooking(
-              title: '',
-            ),
-        '/booking6': (context) => ActivitySixBooking(
-              title: '',
-            ),
-        '/booking7': (context) => ActivitySevenBooking(
-              title: '',
-            ),
-        '/booking8': (context) => ActivityEightBooking(
-              title: '',
-            ),
-        '/booking9': (context) => ActivityNineBooking(
-              title: '',
-            ),
-        '/booking10': (context) => ActivityTenBooking(
-              title: '',
-            ),
-        '/booking11': (context) => ActivityElevenBooking(
-              title: '',
-            ),
-        '/booking12': (context) => ActivityTwelveBooking(
-              title: '',
-            ),
-        '/activitybook': (context) => ActivityTwoBooking(
-              title: '',
-            ),
-        '/booking': (context) => ActivityThreeBooking(
-              title: '',
+              activity: ActivityModel(),
             ),
         '/medinfo': (context) => MedicalInfoPage(),
+       //  '/payment': (context) => PaymentPage (),
         '/banner': (context) => BannerSection(),
-
+        '/addbanner': (context) => AddBannerSection(),
         '/activityreview': (context) => ActivityReviewPage(),
-        '/review': (context) => ReviewListPage(
-              reviews: [],
-            ),
+        '/categorymanagement': (context) => CategoryManager(),
+        '/bookinglist': (context) => BookingsPage(),
+        '/mybookings': (context) => MyBookingList(),'/mypayments': (context) => PaymentHistoryPage(),
+        '/generatereview': (context) => GenerateReview(activityTitle: '',),
       },
       debugShowCheckedModeBanner: false,
       title: 'Aventure App',
@@ -157,7 +125,7 @@ class MyApp extends StatelessWidget {
             ),
             labelSmall: TextStyle(
                 color: Colors.orange, fontSize: 12, letterSpacing: 2)),
-        scaffoldBackgroundColor: Colors.orange.withOpacity(0.8),
+        scaffoldBackgroundColor: Colors.orange,
       ),
     );
   }

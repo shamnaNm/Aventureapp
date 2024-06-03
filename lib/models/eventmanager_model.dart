@@ -10,7 +10,7 @@ class EventManager {
   final String companyname;
   final String qualification;
   final String role;
-
+  final int ?status;
   EventManager({
     this.id,
     required this.email,
@@ -19,7 +19,8 @@ class EventManager {
     required this.phone,
     required this.companyname,
     required this.qualification,
-    required this.role
+    required this.role,
+     this.status,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +33,7 @@ class EventManager {
       'companyname': companyname,
       'qualification': qualification,
       'role':role,
+      'status': status,
 
     };
   }
@@ -47,6 +49,11 @@ class EventManager {
       phone: json['phone'],
       companyname: json['companyname'],
       qualification: json['qualification'],
+      status: json['status'],
     );
   }
+
+
+  // Convert EventManager object to JSON
+
 }

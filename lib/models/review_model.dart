@@ -1,34 +1,39 @@
 
-import 'package:flutter/material.dart';
+import 'package:built_value/serializer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Review {
- final String id;
- final String username;
- final String comment;
- final double rating; // Assuming rating is on a scale of 1 to 5
+ final String? name;
+ final String? uid;
+ final String? avatarUrl;
+ String? review;
+ double ?rating;
+ final Timestamp ?timestamp;
 
- Review({
-  required this.id,
-  required this.username,
-  required this.comment,
-  required this.rating,
- });
+ static Serializer? serializer;
 
- factory Review.fromJson(Map<String, dynamic> json) {
+ Review(
+     {this.name,
+      this.uid,
+      this.avatarUrl,
+      this.review,
+      this.rating,
+      this.timestamp});
+
+ factory Review.fromMap(Map<String,dynamic> data) {
+
+
   return Review(
-   id: json['id'],
-   username: json['username'],
-   comment: json['comment'],
-   rating: json['rating'].toDouble(),
+   name: data['name'],
+   uid: data['uid'],
+   review: data["review"],
+   rating: data["rating"],
+   timestamp: data["timestamp"],
+   avatarUrl: data["avatarUrl"],
   );
  }
 
- Map<String, dynamic> toJson() {
-  return {
-   'id': id,
-   'username': username,
-   'comment': comment,
-   'rating': rating,
-  };
- }
+
+
+
 }

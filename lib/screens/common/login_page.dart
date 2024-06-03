@@ -1,24 +1,22 @@
+import 'package:aventure/screens/common/forgotpage.dart';
 import 'package:aventure/screens/event_manager/reg_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aventure/screens/user/user_register_page.dart';
-
+import 'package:iconsax/iconsax.dart';
 import '../../services/auth_services.dart';
 import '../../services/user_service.dart';
 import '../user/home_page.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
+  bool _checked = false;
   bool visibile = true;
   final _loginKey = GlobalKey<FormState>();
   @override
@@ -26,6 +24,15 @@ class _LoginPageState extends State<LoginPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _showSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successfully Logged in!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -85,11 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[200],
-
                           hintText: "Email",
-
-                          errorStyle: TextStyle(color: Colors.red),
-
                           hintStyle: themeData.textTheme.labelSmall,
                           errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -111,7 +114,6 @@ class _LoginPageState extends State<LoginPage> {
                               width: 1.2,
                             ),
                           ),
-
                           prefixIcon: Icon(Icons.email, color: Colors.orange),
                         ),
                       ),
@@ -119,15 +121,14 @@ class _LoginPageState extends State<LoginPage> {
                         height: 20,
                       ),
                       TextFormField(
-                        keyboardType: TextInputType.phone,
+                        keyboardType: TextInputType.name,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "Password is mandatory";
                           }
                           if (value!.length < 6) {
-                            return "Password should be atleast min 6 characters";
+                            return "Password should be atleast  6 characters";
                           }
-
                           return null;
                         },
                         obscureText: visibile,
@@ -173,50 +174,74 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Forgot Password ?",
-                            style: themeData.textTheme.titleSmall,
-                          )
-                        ],
+                      InkWell(
+                        onTap: (){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>ForgotPage()));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Forgot Password ?",
+                              style: themeData.textTheme.titleSmall,
+                            )
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 25,
                       ),
                       Center(
                         child: InkWell(
+                          onTap: () async {
+                            if (_loginKey.currentState!.validate()) {
+                              AuthService _authService = AuthService();
 
-                      onTap: ()async {
-                        if (_loginKey.currentState!.validate()) {
-                          AuthService _authService = AuthService();
-
-                          final userData = await _authService.loginUser(
-                              _emailController.text.trim(), _passwordController.text.trim());
-                          print(userData);
-                          if (userData != null) {
-                            if (userData['role'] == 'user') {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/navigation',
+                              final userData = await _authService.loginUser(
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim());
+                              print(userData);
+                              if (userData != null) {
+                                if (userData['role'] == 'user') {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/navigation',
                                     (route) => false,
-                              );
 
-                            }else if(userData['role']=='eventmanager'){
-
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/eventhome',
+                                  );
+                                } else if (userData['role'] == 'eventmanager' ) {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/eventhome',
                                     (route) => false,
-                              );
+                                  );
+
+                                  _showSuccessMessage();
+                                }else if(userData['role']=='admin'){
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/admin',
+                                        (route) => false,
+                                  );
+                                }
+                              }else{
+                                showDialog(context: context, builder: (context){
+                                  return AlertDialog(
+
+                                    content: Container(
+                                      height: 100,
+                                      child: Column(
+                                        children: [
+                                          Text("Error, please wait or contact admin ")
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
+                              }
                             }
-                          }
-                        }
-
-                      },
-
-    child: Container(
+                          },
+                          child: Container(
                             height: 55,
                             width: 350,
                             decoration: BoxDecoration(
@@ -266,7 +291,7 @@ class _LoginPageState extends State<LoginPage> {
                             // if (ok) {
                             //   print(_emailController.text);
                             //   print(_passwordController.text);
-                          //  }
+                            //  }
                           },
                           child: Container(
                             height: 55,

@@ -56,7 +56,7 @@ class _UserReviewCrdState extends State<UserReviewCrd> {
             height: 5,
           ),
 
-          ReadMoreText("the user interface of the app is quite intivitive.i was able to navigate and make participate . greate experience,good work guys,keep goingg.",
+          ReadMoreText("The user interface of the app is quite intivitive.i was able to navigate and make participate . greate experience,good work guys,keep goingg.",
             trimLines: 2,
             trimMode: TrimMode.Line,
             trimExpandedText:'Read less' ,
@@ -83,7 +83,7 @@ child: Column(
       height: 5,
     ),
 
-    ReadMoreText("The user interface of the app is quite intivitive.i was able to navigate and make participate . greate experience,good work guys,keep goingg.",
+    ReadMoreText("Thanks! For your valuable words.",
       trimLines: 2,
       trimMode: TrimMode.Line,
       trimExpandedText:'Read less' ,

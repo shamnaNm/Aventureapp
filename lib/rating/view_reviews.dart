@@ -36,7 +36,7 @@ class _ActivityReviewPageState extends State<ActivityReviewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                        "Ratings & Reviews for users vjhg vujlm nbhggg  bfg  bghj aaaa fff bbb cccc hbjnj hbhbhbh  hftdtg  vtfrdtg vggt gvfyh gghuh"),
+                        "Ratings & Reviews from the users having experienced the adventures activities."),
                     const SizedBox(
                       height: 15,
                     ),

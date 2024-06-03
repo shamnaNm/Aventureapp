@@ -24,20 +24,21 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     HomePage(),
     ExplorePage(),
     ProfilePage(),
-    WishlistPage(wishlistItems: [],)
+    WishlistPage()
 
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: BottomNavigationBar(
-              selectedItemColor: Colors.red,
-              unselectedItemColor: Colors.grey,
+              selectedItemColor: Colors.black,
+              unselectedItemColor: Colors.white,
               showSelectedLabels:false,
 
               onTap: (value){

@@ -7,6 +7,7 @@ import 'package:aventure/screens/common/login_page.dart';
 import '../../models/user_model.dart';
 import '../../services/user_service.dart';
 
+
 class EventManagerRegisterPage extends StatefulWidget {
   const EventManagerRegisterPage({super.key});
 
@@ -31,6 +32,15 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
     _passwordController.dispose();
     _userController.dispose();
     super.dispose();
+  }
+
+  void _showSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successfully registered!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -67,6 +77,11 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                         if (value!.isEmpty) {
                           return "Name is mandatory";
                         }
+                        RegExp regex = RegExp(r'^[a-zA-Z ]+$');
+                        if (!regex.hasMatch(value)) {
+                          return "Invalid formate , Use valid username.";
+                        }
+                        return null;
                       },
                       controller: _userController,
                       cursorColor: Colors.orange,
@@ -75,8 +90,6 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                         fillColor: Colors.grey[200],
 
                         hintText: "Name",
-                        errorStyle: TextStyle(color: Colors.orange),
-
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -109,7 +122,11 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Email is mandatory";
+                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return 'Enter a valid email address';
                         }
+                        return null;
                       },
                       controller: _emailController,
                       cursorColor: Colors.orange,
@@ -118,7 +135,7 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                         fillColor: Colors.grey[200],
                         hintText: "Email",
 
-                        errorStyle: TextStyle(color: Colors.orange),
+
 
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
@@ -151,13 +168,13 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                       height: 20,
                     ),
                     TextFormField(
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Password is mandatory";
                         }
                         if (value!.length < 6) {
-                          return "Passwordshould be atleast min 6 characters";
+                          return "Password should be atleast  6 characters";
                         }
 
                         return null;
@@ -209,14 +226,13 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                     SizedBox(
                       height: 20,
                     ),
-
                     TextFormField(
-
                       keyboardType: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Company name is mandatory";
                         }
+                        return null;
                       },
                       controller: _compnameController,
                       cursorColor: Colors.orange,
@@ -225,7 +241,6 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                         fillColor: Colors.grey[200],
 
                         hintText: "Company Name",
-                        errorStyle: TextStyle(color: Colors.orange),
 
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
@@ -248,29 +263,29 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                               width: 1.2,
                             )),
 
-                        prefixIcon: Icon(Icons.home_work_outlined, color: Colors.orange),
+                        prefixIcon: Icon(Icons.home_work_outlined,
+                            color: Colors.orange),
                       ),
                     ),
                     SizedBox(
                       height: 20,
                     ),
-
                     TextFormField(
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Phone.no is mandatory";
+                        } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                          return 'Enter a valid Indian mobile number';
                         }
+                        return null;
                       },
                       controller: _phoneController,
                       cursorColor: Colors.orange,
                       decoration: InputDecoration(
                         filled: true, // Set filled property to true
                         fillColor: Colors.grey[200],
-
                         hintText: "Contact",
-                        errorStyle: TextStyle(color: Colors.orange),
-
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -301,26 +316,53 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                     SizedBox(
                       height: 25,
                     ),
-
                     Center(
                       child: GestureDetector(
                         onTap: () async {
-                          EventManager eventmanager = EventManager(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                              name: _userController.text,
-                              phone: _phoneController.text,
-                              companyname: _compnameController.text,
-                              qualification: _qualifiController.text,
-                              role: 'eventmanager');
+                          if (_regKey.currentState!.validate()) {
+                            try {
+                              EventManager eventmanager = EventManager(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  name: _userController.text,
+                                  phone: _phoneController.text,
+                                  companyname: _compnameController.text,
+                                  qualification: _qualifiController.text,
+                                  role: 'eventmanager',
+                              status:0);
 
-                          EventManagerService _eventmanagerService =
-                              EventManagerService();
-                          await _eventmanagerService
-                              .registerUser(eventmanager)
-                              .then((value) =>
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/login', (route) => false));
+                              EventManagerService _eventmanagerService =
+                                  EventManagerService();
+
+                              final res = await _eventmanagerService
+                                  .registerUser(eventmanager);
+
+                              if (res == "") {
+                                _showSuccessMessage();
+                                Navigator.pushReplacementNamed(
+                                    context, '/login');
+                              }
+                            } on FirebaseAuthException catch (e) {
+                              // Handle FirebaseAuthException here
+                              print('Firebase Auth Exception: ${e.message}');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content:
+                                      Text("Firebase Auth Error: ${e.message}"),
+                                ),
+                              );
+                            } catch (e) {
+                              // Catch any other type of exception
+                              print('Error: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text("Error: $e"),
+                                ),
+                              );
+                            }
+                          }
                         },
                         child: Container(
                           height: 55,

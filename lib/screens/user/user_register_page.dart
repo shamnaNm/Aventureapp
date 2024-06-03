@@ -6,11 +6,9 @@ import '../../services/user_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
-
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
-
 class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -19,14 +17,11 @@ class _RegisterPageState extends State<RegisterPage> {
   bool visibile = true;
   final _regKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   List<String> roles = [
     'user',
     'eventmanager',
   ];
-
   String? selectedRole;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -34,7 +29,14 @@ class _RegisterPageState extends State<RegisterPage> {
     _userController.dispose();
     super.dispose();
   }
-
+  void _showSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successfully registered!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -69,16 +71,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (value!.isEmpty) {
                           return "Name is mandatory";
                         }
+                        RegExp regex = RegExp(r'^[a-zA-Z ]+$');
+                        if (!regex.hasMatch(value)) {
+                          return "Invalid formate , Use valid username.";
+                        }
+                        return null;
                       },
-                      obscureText: visibile,
                       controller: _userController,
                       cursorColor: Colors.orange,
                       decoration: InputDecoration(
                         filled: true, // Set filled property to true
                         fillColor: Colors.grey[200],
 
-                        hintText: "Name",
-                        errorStyle: TextStyle(color: Colors.orange),
+                        hintText: "UserName",
+
 
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
@@ -113,8 +119,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (value!.isEmpty) {
                           return "Email is mandatory";
                         }
+                        else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          return 'Enter a valid email address';
+                        }
+                        return null;
+
                       },
-                      obscureText: visibile,
+
                       controller: _emailController,
                       cursorColor: Colors.orange,
                       decoration: InputDecoration(
@@ -122,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: Colors.grey[200],
                         hintText: "Email",
 
-                        errorStyle: TextStyle(color: Colors.orange),
+
 
                         hintStyle: themeData.textTheme.labelSmall,
                         errorBorder: OutlineInputBorder(
@@ -161,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           return "Password is mandatory";
                         }
                         if (value!.length < 6) {
-                          return "Password should be atleast contains minimum 6 characters";
+                          return "Password should be atleast  6 characters";
                         }
 
                         return null;
@@ -224,6 +235,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               UserModel user = UserModel(
                                   role: "user",
                                   phone: "",
+                                  address: "",
+                                    imgUrl: "",
+                                    gender: "",
+                                  nationality: "",
+                                  experienceLevel: "",
                                   name: _userController.text,
                                   email: _emailController.text,
                                   password: _passwordController.text,
@@ -236,6 +252,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               await userService.registerUser(user);
 
                               if (res == "") {
+                                _showSuccessMessage();
                                 Navigator.pushReplacementNamed(
                                     context, '/login');
                               }

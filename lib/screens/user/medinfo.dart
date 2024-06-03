@@ -1,16 +1,11 @@
-// Navigator.push(
-// context,
-// MaterialPageRoute(
-// builder: (context) => MedicalInfoPage(medicalInfo: widget.medicalInfo),
-// ),
-// );
+import 'package:aventure/models/activity_model.dart';
+import 'package:aventure/models/user_model.dart';
+import 'package:aventure/screens/user/paymentpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../models/medicalInfo_model.dart';
-
 class MedicalInfoPage extends StatefulWidget {
   final MedicalInfo? medicalInfo;
-
   const MedicalInfoPage({Key? key, this.medicalInfo}) : super(key: key);
 
   @override
@@ -24,24 +19,49 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
   late TextEditingController _otherDiseasesController;
   late bool _hasHeartProblem;
   late bool _hasAllergies;
-late bool _hasDisability;
+  late bool _hasDisability;
+
   @override
   void initState() {
     super.initState();
+    getData();
     _bpRateController = TextEditingController(text: widget.medicalInfo?.bpRate);
-    _glucoseRateController = TextEditingController(text: widget.medicalInfo?.glucoseRate);
-    _allergiesController = TextEditingController(text: widget.medicalInfo?.allergies);
-    _otherDiseasesController = TextEditingController(text: widget.medicalInfo?.otherDiseases);
+    _glucoseRateController =
+        TextEditingController(text: widget.medicalInfo?.glucoseRate);
+    _allergiesController =
+        TextEditingController(text: widget.medicalInfo?.allergies);
+    _otherDiseasesController =
+        TextEditingController(text: widget.medicalInfo?.otherDiseases);
     _hasHeartProblem = widget.medicalInfo?.hasHeartProblem ?? false;
     _hasAllergies = widget.medicalInfo?.hasAllergies ?? false;
-    _hasDisability=widget.medicalInfo?.hasDisability ?? false;
-  }
+    _hasDisability = widget.medicalInfo?.hasDisability ?? false;
 
+  }
+  var uid;
+
+
+
+  getData() async {
+    uid = FirebaseAuth.instance.currentUser!.uid;
+    setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> args =
+    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    final ActivityModel activity = args['activity'];
+
+    final DateTime? selectedDate = args['selectedDate'];
+    final String? selectedTime = args['selectedTime'];
+    final int ticketsSelected = args['ticketsSelected'];
+    final double totalAmount = args['totalAmount'];
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('Medical Information')),
+      appBar: AppBar(
+        title: Text('Health Info', style: TextStyle(color: Colors.white)),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
@@ -102,23 +122,61 @@ late bool _hasDisability;
               decoration: InputDecoration(labelText: 'Specify disability'),
             )
                 : SizedBox(),
+            SizedBox(height: 20),
 
-            SizedBox(height: 20,),
-            ElevatedButton(
-              onPressed: () {
-                // Save medical info
-                // Navigator.pop(context, MedicalInfo(
-                //   bpRate: _bpRateController.text,
-                //   glucoseRate: _glucoseRateController.text,
-                //   hasHeartProblem: _hasHeartProblem,
-                //   hasAllergies: _hasAllergies,
-                //   allergies: _allergiesController.text,
-                //   otherDiseases: _otherDiseasesController.text,
-                // ));
+        ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Confirm Booking'),
+                  content: Text('Are you sure you want to save this information?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cancel saving
+                      },
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close dialog
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentPage(),
+                            settings: RouteSettings(
+                              arguments: {
+                                'activity': activity,
+                                'selectedDate': selectedDate,
+                                'selectedTime': selectedTime,
+                                'ticketsSelected': ticketsSelected,
+                                'totalAmount': totalAmount,
+                                'medicalInfo': {
+                                  'bpRate': _bpRateController.text,
+                                  'glucoseRate': _glucoseRateController.text,
+                                  'allergies': _allergiesController.text,
+                                  'otherDiseases': _otherDiseasesController.text,
+                                  'hasHeartProblem': _hasHeartProblem,
+                                  'hasAllergies': _hasAllergies,
+                                  'hasDisability': _hasDisability,
+                                },
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('Confirm'),
+                    ),
+                  ],
+                );
               },
-              child: Text('Save'),
-            ),
-          ],
+            );
+          },
+          child: Text('Save'),
+        ),
+        ],
         ),
       ),
     );

@@ -1,25 +1,18 @@
 
 import 'package:aventure/services/auth_services.dart';
 import 'package:flutter/material.dart';
-import 'package:aventure/widgets/appbutton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
-
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
-
 class _SplashPageState extends State<SplashPage> {
   AuthService _authService = AuthService();
   bool isLogin = false;
   var role;
-
-
   checkLogin() async {
     isLogin = await _authService.isLoggedin();
-
     if (isLogin == true) {
       if (role == 'user') {
         Navigator.pushNamedAndRemoveUntil(
@@ -36,13 +29,10 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     }
   }
-
   getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-
     role = await _pref.getString('role');
   }
-
   @override
   void initState() {
     getData();
@@ -52,7 +42,6 @@ class _SplashPageState extends State<SplashPage> {
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {

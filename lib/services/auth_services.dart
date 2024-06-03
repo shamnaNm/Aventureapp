@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,27 +7,20 @@ class AuthService {
   //login
   // logout
   //alrady logined
-
-
-
-  Future<DocumentSnapshot> loginUser(String? email, String password) async {
+  Future<DocumentSnapshot?> loginUser(String? email, String password) async {
     UserCredential userData = await FirebaseAuth.instance
         .signInWithEmailAndPassword(
-        email: email.toString(), password: password.toString());
-
+            email: email.toString(), password: password.toString());
     final loginSnap = await FirebaseFirestore.instance
         .collection('login')
         .doc(userData.user!.uid)
         .get();
     var token = await userData.user!.getIdToken();
-
-    if(loginSnap['role']=="eventmanager"){
-
+    if (loginSnap['role'] == "eventmanager" && loginSnap['status'] == 1) {
       final eventmanagerSnap = await FirebaseFirestore.instance
           .collection('eventmanager')
           .doc(userData.user!.uid)
           .get();
-
       SharedPreferences _pref = await SharedPreferences.getInstance();
       _pref.setString('token', token!);
       _pref.setString('name', eventmanagerSnap['name']);
@@ -38,27 +30,26 @@ class AuthService {
 
       _pref.setString('role', eventmanagerSnap['role']);
 
-    }else if(loginSnap['role']=='user'){
-
-
-
+      return loginSnap;
+    } else if (loginSnap['role'] == 'user') {
       final userSnap = await FirebaseFirestore.instance
-
           .collection('user')
           .doc(userData!.user!.uid)
-
           .get();
       SharedPreferences _pref = await SharedPreferences.getInstance();
       _pref.setString('token', token!);
       _pref.setString('name', userSnap['name']);
       _pref.setString('email', userSnap['email']);
       _pref.setString('phone', userSnap['phone']);
-
-
       _pref.setString('role', userSnap['role']!);
+      _pref.setString('gender', userSnap['gender']!);
+      _pref.setString('experienceLevel', userSnap['experienceLevel']!);
+      _pref.setString('nationality', userSnap['nationality']!);
+      _pref.setString('address', userSnap['address']!);
 
 
-    }else if(loginSnap['role']=='admin'){
+      return loginSnap;
+    } else if (loginSnap['role'] == 'admin') {
       //
       //
       // final eventmanagerSnap = await FirebaseFirestore.instance
@@ -70,30 +61,17 @@ class AuthService {
       _pref.setString('name', "admin");
       _pref.setString('email', email.toString());
       _pref.setString('phone', "9895663498");
-
-
       _pref.setString('role', "admin");
 
-
+      return loginSnap;
     }
-
-
-
-
-    return loginSnap;
   }
 
-  Future<void>logout()async{
-
-    SharedPreferences _pref=await SharedPreferences.getInstance();
+  Future<void> logout() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.clear();
-
     await FirebaseAuth.instance.signOut();
-
-
   }
-
-
 
   Future<bool> isLoggedin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();

@@ -20,7 +20,6 @@ class RegisterTab extends StatelessWidget {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
-
             bottom: const TabBar(
               isScrollable: true,
               padding: EdgeInsets.all(20),
@@ -29,9 +28,7 @@ class RegisterTab extends StatelessWidget {
               labelStyle: TextStyle(color: Colors.white),
               tabs: [
                 Text("User Registration"),
-                Text("eventmanager Registration"),
-
-
+                Text("Eventmanager Registration"),
               ],
             ),
             title: const Text('Tabs Demo'),
