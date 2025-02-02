@@ -327,7 +327,9 @@ class _EventManagerRegisterPageState extends State<EventManagerRegisterPage> {
                                   name: _userController.text,
                                   phone: _phoneController.text,
                                   companyname: _compnameController.text,
-                                  qualification: _qualifiController.text,
+                                  qualification: '',
+                                  description: '',
+                                  img: '',
                                   role: 'eventmanager',
                               status:0);
 

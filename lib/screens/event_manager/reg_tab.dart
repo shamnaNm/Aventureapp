@@ -2,9 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
-
-
-
 import '../user/user_register_page.dart';
 import 'event_reg.dart';
 
@@ -14,10 +11,8 @@ class RegisterTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
       body: DefaultTabController(
-        length: 4,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             bottom: const TabBar(

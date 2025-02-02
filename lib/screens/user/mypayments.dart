@@ -2,6 +2,7 @@ import 'package:aventure/models/paymentmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PaymentHistoryPage extends StatefulWidget {
   @override
@@ -47,6 +48,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              DateTime dateTime = (data['dateTime'] as Timestamp).toDate();
+              String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(dateTime);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -57,8 +60,11 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                   child: ListTile(
                     title: Text('Amount: ${data['amountPaid']}'),
                     subtitle: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Date: ${data['dateTime']}'),
+                        // Text('Date: ${data['dateTime']}'),
+                        Text('Date and Time: $formattedDate'),
                       ],
                     ),
                     // Add more fields as needed

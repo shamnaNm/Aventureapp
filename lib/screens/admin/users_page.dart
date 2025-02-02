@@ -1,3 +1,4 @@
+import 'package:aventure/screens/admin/userabout.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
@@ -101,10 +102,7 @@ class _UserPageState extends State<UserPage> {
                               _deleteUser(user.uid!);
                             },
                             background: Container(
-
                                 color: Colors.grey), // Add background color when swiping
-                            
-
                               child: ListTile(
                                 tileColor: Colors.grey.withOpacity(0.1),
                                 title: Text(user.name ?? ''),
@@ -116,6 +114,15 @@ class _UserPageState extends State<UserPage> {
                                     _showDeleteConfirmationDialog(user.uid!, user.name ?? '');
                                   },
                                 ),
+                                onTap: () {
+                                  // Navigate to UserDetailsPage on tap
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserDetailsPage(user: user),
+                                    ),
+                                  );
+                                },
 
                               ),
 

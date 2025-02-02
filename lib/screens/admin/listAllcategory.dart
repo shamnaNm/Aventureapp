@@ -56,7 +56,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Category List'),
+        title: Text('Category List',style: TextStyle(color: Colors.white),),
       ),
       body: StreamBuilder<List<CategoryModel>>(
         stream: _categoryService.getCategories(),

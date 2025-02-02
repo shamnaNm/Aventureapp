@@ -25,15 +25,28 @@ class _UserReviewsPageState extends State<UserReviewsPage> {
     try {
       uid = FirebaseAuth.instance.currentUser!.uid;
       print("Current user UID: $uid"); // Debugging line
+
       var reviewDocs = await FirebaseFirestore.instance
           .collection('reviews')
           .where('uid', isEqualTo: uid)
           .get();
+
+      List<GenReview> fetchedReviews = [];
+      for (var doc in reviewDocs.docs) {
+        var reviewData = doc.data();
+        var userDoc = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(reviewData['uid'])
+            .get();
+
+        reviewData['userImageUrl'] = userDoc['imgUrl'];
+
+        print("Fetched review: $reviewData"); // Debugging line
+        fetchedReviews.add(GenReview.fromMap(reviewData));
+      }
+
       setState(() {
-        userReviews = reviewDocs.docs.map((doc) {
-          print("Fetched review: ${doc.data()}"); // Debugging line
-          return GenReview.fromMap(doc.data());
-        }).toList();
+        userReviews = fetchedReviews;
         _isLoading = false;
       });
     } catch (e) {
@@ -49,7 +62,7 @@ class _UserReviewsPageState extends State<UserReviewsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('My Reviews',style: TextStyle(color: Colors.white),),
+        title: Text('My Reviews', style: TextStyle(color: Colors.white)),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -86,7 +99,7 @@ class _UserReviewsPageState extends State<UserReviewsPage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage("assets/img/profile.png"),
+                        backgroundImage: NetworkImage(review.userImageUrl),
                       ),
                       SizedBox(width: 15),
                       Text(
@@ -97,36 +110,13 @@ class _UserReviewsPageState extends State<UserReviewsPage> {
                   ),
                   PopupMenuButton<String>(
                     onSelected: (String value) {
-                      if (value == 'edit') {
-                        // Implement edit functionality here
-                      } else if (value == 'delete') {
-                        // Implement delete functionality here
-                      } else if (value == 'share') {
+                     if (value == 'share') {
                         // Implement share functionality here
                       }
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit, color: Colors.black),
-                              SizedBox(width: 8),
-                              Text('Edit'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete, color: Colors.black),
-                              SizedBox(width: 8),
-                              Text('Delete'),
-                            ],
-                          ),
-                        ),
+                       
                         PopupMenuItem(
                           value: 'share',
                           child: Row(
@@ -186,6 +176,7 @@ class _UserReviewsPageState extends State<UserReviewsPage> {
       ),
     );
   }
+
   String _getMonthName(int month) {
     switch (month) {
       case 1:

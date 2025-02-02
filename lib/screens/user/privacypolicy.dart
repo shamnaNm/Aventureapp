@@ -5,7 +5,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.orange,
         title: Text('Privacy Policy',style: TextStyle(color: Colors.black)),
       ),
       body: SingleChildScrollView(
@@ -26,7 +26,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               SizedBox(height: 20.0),
               Text(
-                'Effective Date: [16-05-2024]',
+                'Effective Date: [16-04-2024]',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                 ),
@@ -125,6 +125,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               Text(
                 'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at [aventure@gmail.com].',
               ),
+
             ],
           ),
         ),

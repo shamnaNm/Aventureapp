@@ -22,7 +22,13 @@ class UserService {
           password: user.password,
           name: user.name,
           phone: user.phone,
-          status: user.status);
+          status: user.status,
+          imgUrl:user.imgUrl,
+          gender: user.gender,
+          nationality: user.nationality,
+          experienceLevel: user.experienceLevel,
+          address: user.address
+      );
 
       FirebaseFirestore.instance
           .collection('login')
@@ -76,20 +82,25 @@ class UserService {
       String phone,
       String gender,
       String nationality,
-      String experienceLevel) async {
+      String experienceLevel,
+      String imgUrl) async {
     FirebaseFirestore.instance.collection('user').doc(uid!).update({
       'gender': gender,
       'nationality': nationality,
       'experienceLevel': experienceLevel,
       'phone': phone,
       'address': address,
-      'name': name
+      'name': name,
+      'imgUrl':imgUrl
     });
 
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('name', name);
-
+    _pref.setString('gender', gender);
     _pref.setString('phone', phone);
+    _pref.setString('nationality', nationality);
+    _pref.setString('experienceLevel', experienceLevel);
     _pref.setString('address', address);
+    _pref.setString('imgUrl', imgUrl);
   }
 }

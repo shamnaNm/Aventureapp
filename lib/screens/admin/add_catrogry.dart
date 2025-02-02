@@ -35,7 +35,7 @@ class _CategoryManagerState extends State<CategoryManager> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Category Manager'),
+        title: Text('Add Category',style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         children: <Widget>[

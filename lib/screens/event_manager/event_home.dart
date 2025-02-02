@@ -9,14 +9,15 @@ class EventManagerHome extends StatefulWidget {
 }
 class _EventManagerHomeState extends State<EventManagerHome> {
   List<Map<String, dynamic>> items = [
-    {"name": "Add Banners", "icon": Icons.add_circle},
-    {"name": "Add Activity", "icon": Icons.event},
-    {"name": "View Activity", "icon": Icons.event_note_outlined},
+    {"name": "Add Banners/Offer", "icon": Icons.local_offer_outlined},
+    {"name": "Add Activity", "icon": Icons.downhill_skiing_outlined},
+    {"name": "View Activity", "icon": Icons.surfing_outlined,},
     {"name": "Bookings", "icon": Icons.book},
-    {"name": "Generated Tickets", "icon": Icons.sticky_note_2_outlined},
-    {"name": "Activity/Event \n\t\t\tSchedule", "icon": Icons.schedule},
+    {"name": "Generated Tickets", "icon": Icons.receipt},
+    {"name": "Refunds", "icon": Icons.wallet_outlined},
+    {"name": "Certificate", "icon": Icons.panorama_outlined},
     {"name": "About Us", "icon": Icons.people},
-    {"name": "Profile", "icon": Icons.person},
+    {"name": "Profile", "icon": Icons.manage_accounts_rounded},
   ];
   List<String> routes = [
     '/addbanners',
@@ -24,8 +25,9 @@ class _EventManagerHomeState extends State<EventManagerHome> {
     '/allactivity',
     '/viewbookings',
     '/tickets',
-    '/schedule',
-    '/aboutus',
+    '/refund',
+    '/certificate',
+    '/abouteventer',
     '/eventerprofile',
   ];
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

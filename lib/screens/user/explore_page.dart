@@ -6,35 +6,35 @@ import 'package:aventure/widgets/mapwidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../models/category_model.dart';
 import '../../models/activity_model.dart';
 import '../../models/user_model.dart';
 import '../../widgets/sliderhomebanner.dart';
+
 class ExplorePage extends StatefulWidget {
   const ExplorePage({Key? key}) : super(key: key);
   @override
   State<ExplorePage> createState() => _ExplorePageState();
 }
+
 class _ExplorePageState extends State<ExplorePage> {
   final CategoryService _categoryService = CategoryService();
   TextEditingController _searchController = TextEditingController();
   UserModel? currentUser;
+  var uid;
   List<WishlistModel> wishlist = [];
+  late Future<UserModel> _userFuture;
   @override
   void initState() {
     super.initState();
     getData();
     _fetchCurrentUser();
     _fetchWishlist();
+    _userFuture = _getUserData();
   }
-  var uid;
 
-
-  getData() async {
-    uid = FirebaseAuth.instance.currentUser!.uid;
-    setState(() {});
-  }
   Future<void> _fetchCurrentUser() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -50,6 +50,27 @@ class _ExplorePageState extends State<ExplorePage> {
     } catch (e) {
       print('Error fetching user data: $e');
     }
+  }
+
+  Future<UserModel> _getUserData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .get();
+      UserModel userData = UserModel.fromJson(userDoc);
+
+      return userData;
+    } else {
+      throw Exception("User not logged in");
+    }
+  }
+
+  getData() async {
+    uid = FirebaseAuth.instance.currentUser!.uid;
+    setState(() {});
   }
 
   Future<void> _fetchWishlist() async {
@@ -190,16 +211,62 @@ class _ExplorePageState extends State<ExplorePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage(
-                    'assets/img/profile.png', // Replace with actual image asset
-                  ),
+                FutureBuilder<UserModel>(
+                  future: _userFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // While data is loading
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      // If there's an error fetching data
+                      return Icon(Icons.error);
+                    } else if (snapshot.hasData) {
+                      // If data is successfully fetched
+                      UserModel user = snapshot.data!;
+                      return GestureDetector(
+                        onTap: () {
+                          // Handle onTap event
+                        },
+                        child:
+                        // CircleAvatar(
+                        //   radius: 30,
+                        //   backgroundImage: user.imgUrl != null
+                        //       ? NetworkImage(user.imgUrl!)
+                        //       : null,
+                        //   child: user.imgUrl == null
+                        //       ? Icon(Icons.person, size: 30)
+                        //       : null,
+                        //   backgroundColor: Colors.grey[200],
+                        // ),
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey[300],
+                          child: user.imgUrl != null && user.imgUrl!.isNotEmpty
+                              ? ClipOval(
+                            child: Image.network(
+                              user.imgUrl!,
+                              fit: BoxFit.cover,
+                              width: 90,
+                              height: 90,
+                            ),
+                          )
+                              : Icon(
+                            Icons.person,
+                            color: Colors.orange,
+                          ),
+                        ),
+
+                      );
+                    } else {
+                      // No user data available
+                      return Icon(Icons.person);
+                    }
+                  },
                 ),
                 SizedBox(height: 5),
                 if (currentUser != null)
                   Text(
-                    currentUser!.name ?? 'Guest',
+                    currentUser!.name!,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -261,21 +328,21 @@ class _ExplorePageState extends State<ExplorePage> {
                     ),
                     Row(
                       children: [
-                        Text(
-                          "See All",
-                          style: TextStyle(
-                            color: Colors.orange.withOpacity(0.8),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.orange,
-                        )
+                        // Text(
+                        //   "See All",
+                        //   style: TextStyle(
+                        //     color: Colors.orange.withOpacity(0.8),
+                        //     fontSize: 14,
+                        //     fontWeight: FontWeight.w700,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // Icon(
+                        //   Icons.arrow_forward,
+                        //   color: Colors.orange,
+                        // )
                       ],
                     ),
                   ],
@@ -339,6 +406,24 @@ class _ExplorePageState extends State<ExplorePage> {
                         ),
                         SizedBox(
                           height: 20,
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('banners')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+
+                            final banners = snapshot.data!.docs
+                                .map((doc) => doc['image_url'] as String)
+                                .toList();
+
+                            return banners.isNotEmpty
+                                ? MyPromoSlider(banners: banners)
+                                : Center(child: Text(''));
+                          },
                         ),
                         FutureBuilder<List<ActivityModel>>(
                           future: _fetchActivities(
@@ -453,8 +538,9 @@ class _ExplorePageState extends State<ExplorePage> {
                                                     ),
                                                     Row(
                                                       children: [
-
-                                                           Icon( Icons.location_pin,),
+                                                        Icon(
+                                                          Icons.location_pin,
+                                                        ),
                                                         Text(
                                                             activity.location!),
                                                       ],

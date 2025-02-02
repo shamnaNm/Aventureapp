@@ -87,12 +87,89 @@ class _EventManagerPageState extends State<EventManagerPage> {
                         }
                       },
                     ),
+
+                    onTap: () {
+                      // Navigate to the detail page when the list tile is tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EventManagerDetailPage(eventManager: eventManager),
+                        ),
+                      );
+                    },
+
                   ),
 
               );
             }).toList(),
           );
         },
+      ),
+    );
+  }
+}
+class EventManagerDetailPage extends StatelessWidget {
+  final EventManager eventManager;
+
+  const EventManagerDetailPage({Key? key, required this.eventManager}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor:  Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Event Manager Details',
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image.network( eventManager.img ?? '',height: 180,width: 180,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  eventManager.img != null &&eventManager.img!.isNotEmpty
+                      ? Image.network(
+                    eventManager.img!,
+                    height: 150,
+                    width: 150,
+                  )
+                      : Container(
+                    height: 150,
+                    width: 150,
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Text(
+                        'Image not available',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text('Company Name: ${eventManager.companyname}', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 8),
+              Text('Name: ${eventManager.name}', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 8),
+              Text('Email: ${eventManager.email}', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 8),
+              Text('Phone: ${eventManager.phone}', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 8),
+              Text('Qualification: ${eventManager.qualification}', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 8),
+              Text('About    : ${eventManager.description}', style: TextStyle(fontSize: 18)),
+              
+              // Add more details if needed
+            ],
+          ),
+        ),
       ),
     );
   }

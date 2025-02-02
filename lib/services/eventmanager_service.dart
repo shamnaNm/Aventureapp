@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/eventmanager_model.dart';
 class EventManagerService{
   Future<String?> registerUser(EventManager user) async {
@@ -101,4 +102,30 @@ class EventManagerService{
       'timestamp': DateTime.now(),
     });
   }
+  Future<void> updateEventManager(
+      String? uid,
+      String name,
+      String description,
+      String phone,
+      String qualification,
+      String companyname,
+      String img
+      ) async {
+    FirebaseFirestore.instance.collection('eventmanager').doc(uid!).update({
+      'companyname': companyname,
+      'qualification': qualification,
+      'description': description,
+      'phone': phone,
+      'img': img,
+      'name': name
+    });
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref.setString('name', name);
+    _pref.setString('companyname', companyname);
+    _pref.setString('phone', phone);
+    _pref.setString('img', img);
+    _pref.setString('qualification', qualification);
+    _pref.setString('description', description);
+  }
 }
+

@@ -12,6 +12,7 @@ class BookingModel {
   var eventManagerId;
   String?userid;
   int?status;
+  String?paymentMethod;
   BookingModel({
     this.id,
     this.status,
@@ -25,6 +26,7 @@ class BookingModel {
     this.tickets,
     this.amountPaid,
     this.userid,
+    this.paymentMethod,
   });
   factory BookingModel.fromJson(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -40,6 +42,7 @@ class BookingModel {
       userid:data['userid'],
       eventManagerId: data['eventManagerId']??'',
       eventer:data['eventer']??'',
+        paymentMethod:data['paymentMethod'],
         status: data['status']??0
     );
   }
@@ -54,7 +57,8 @@ class BookingModel {
       'time': time,
       'tickets': tickets,
       'amountPaid': amountPaid,
-      'status':0
+      'status':0,
+      'paymentMethod':paymentMethod
     };
   }
 }

@@ -69,8 +69,10 @@ class _BookingCalendarState extends State<BookingCalendar> {
     return _isLoading
         ? Center(child: CircularProgressIndicator())
         : Column(
+
             children: [
               TableCalendar(
+
                   firstDay: DateTime.utc(2020, 1, 1),
                   lastDay: DateTime.utc(2030, 12, 31),
                   focusedDay: _selectedDay,
@@ -85,8 +87,10 @@ class _BookingCalendarState extends State<BookingCalendar> {
                         "Events for selected day: ${_getEventsForDay(_selectedDay)}"); // Debug: print events for selected day
                   },
                   eventLoader: _getEventsForDay,
+
                   calendarStyle: CalendarStyle(
                     markersMaxCount: 1,
+
                     selectedDecoration: BoxDecoration(
                       color: Colors.orange,
                       shape: BoxShape.circle,

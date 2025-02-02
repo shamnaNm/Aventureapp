@@ -44,13 +44,12 @@ class _NotificationAccessState extends State<NotificationAccess> {
       print('Error rejecting registration: $e');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Pending Registrations'),
+        title: Text('Pending Registrations',style: TextStyle(color: Colors.white),),
       ),
       body: FutureBuilder<List<EventManager>>(
         future: _pendingRegistrations,

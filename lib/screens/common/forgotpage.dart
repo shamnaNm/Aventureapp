@@ -30,20 +30,21 @@ class _ForgotPageState extends State<ForgotPage> {
     return Scaffold(
       backgroundColor: Colors.orange,
       appBar: AppBar(
-        title: Text("Forgot pasword"),
-        backgroundColor: Colors.white,
+        title: Text("Forgot password",style: TextStyle(color: Colors.white),),
+
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(15.0),
           child: Form(
             key: _loginKey,
             child: Column(
               children: <Widget>[
                 Text(
                   "We will mail you a link....please click on that link to reset your password.",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18,color: Colors.white),
                 ),
+                SizedBox(height: 20,),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -92,8 +93,8 @@ class _ForgotPageState extends State<ForgotPage> {
                     }
                   },
                   child: Container(
-                    height: 55,
-                    width: 350,
+                    height: 50,
+                    width: 100,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12)),

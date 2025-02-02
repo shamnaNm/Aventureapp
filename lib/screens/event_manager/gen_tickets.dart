@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:aventure/screens/event_manager/listtickets.dart';
@@ -13,7 +12,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWid;
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class GenerateTicket extends StatelessWidget {
   final String ticketNumber;
   final String eventer;
@@ -21,7 +19,9 @@ class GenerateTicket extends StatelessWidget {
   final String category;
   final double amountPaid;
   final int numberOfTickets;
-
+  final String UserId;
+  final String time;
+  final  DateTime date;
   GenerateTicket({
     required this.ticketNumber,
     required this.eventer,
@@ -29,13 +29,16 @@ class GenerateTicket extends StatelessWidget {
     required this.category,
     required this.amountPaid,
     required this.numberOfTickets,
+    required this.UserId,
+    required this.time,
+    required this.date
   });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Generate Ticket'),
+        title: Text('Generate Ticket',style: TextStyle(color:Colors.white ),),
         actions: [
           IconButton(
             icon: Icon(Icons.list),
@@ -60,6 +63,8 @@ class GenerateTicket extends StatelessWidget {
               category: category,
               amountPaid: amountPaid,
               numberOfTickets: numberOfTickets,
+              date:date,
+              time:time,
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -76,13 +81,11 @@ class GenerateTicket extends StatelessWidget {
       ),
     );
   }
-
   Future<Uint8List> _createPdf() async {
     final pdf = pdfWid.Document(version: PdfVersion.pdf_1_4, compress: true);
     final ByteData bytes = await rootBundle.load('assets/img/aventures.png');
     final Uint8List byteList = bytes.buffer.asUint8List();
     final image = pdfWid.MemoryImage(byteList);
-
     pdf.addPage(
       pdfWid.Page(
         pageFormat: PdfPageFormat.a4,
@@ -119,13 +122,21 @@ class GenerateTicket extends StatelessWidget {
                 ),
                 pdfWid.SizedBox(height: 8.0),
                 pdfWid.Text(
-                  'Amount Paid: ₹Rs. ${amountPaid.toStringAsFixed(2)}',
+                  'Amount Paid: Rs. ${amountPaid.toStringAsFixed(2)}',
                   style: pdfWid.TextStyle(fontSize: 16),
                 ),
                 pdfWid.SizedBox(height: 8.0),
                 pdfWid.Text(
                   'Number of Tickets: $numberOfTickets',
                   style: pdfWid.TextStyle(fontSize: 16),
+                ),
+                pdfWid.SizedBox(height: 8.0),
+                pdfWid.Text(
+                    'Date: ${date.toLocal().toString().split(' ')[0]}'
+                ),
+                pdfWid.SizedBox(height: 8.0),
+                pdfWid.Text(
+                    'Time: $time'
                 ),
               ],
             ),
@@ -140,67 +151,36 @@ class GenerateTicket extends StatelessWidget {
   Future<void> updataBooking(String bookingid)async{
 
     await FirebaseFirestore.instance.collection('bookings').doc(bookingid).update({
-     'status':1
-  });
+      'status':1
+    });
 
-}
-
-  // Future<File> _savePdfFile(Uint8List pdfData) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final file = File('${directory.path}/ticket.pdf');
-  //   await file.writeAsBytes(pdfData);
-  //   return file;
-  // }
-
-
+  }
   Future<File> _savePdfFile(Uint8List pdfData) async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/ticket_${DateTime.now().millisecondsSinceEpoch}.pdf');
     await file.writeAsBytes(pdfData);
-
     // Upload PDF to Firestore Storage and get the URL
     final storageRef = FirebaseStorage.instance.ref().child('tickets/${file.path.split('/').last}');
     await storageRef.putFile(file);
     final pdfUrl = await storageRef.getDownloadURL();
-
     // Save the URL in Firestore
     await FirebaseFirestore.instance.collection('tickets').add({
       'ticketNumber': ticketNumber,
       'pdfUrl': pdfUrl,
+      'eventer':eventer,
+      'activity':activity,
+      'category':category,
+      'amountPaid':amountPaid,
+      'numberOfTickets':numberOfTickets,
+      'userid':UserId,
       'timestamp': FieldValue.serverTimestamp(),
+      'time':time,
+      'date':date,
     });
 
     return file;
   }
 
-
-
-
-
-  // Future<File> _savePdfFile(Uint8List pdfData) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final file = File('${directory.path}/ticket_${DateTime.now().millisecondsSinceEpoch}.pdf');
-  //   await file.writeAsBytes(pdfData);
-  //
-  //   // Save the file path to shared preferences
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   List<String> pdfList = prefs.getStringList('pdfList') ?? [];
-  //   pdfList.add(file.path);
-  //   await prefs.setStringList('pdfList', pdfList);
-  //
-  //   return file;
-  // }
-  //
-
-
-//   void _viewPdf(BuildContext context, File file) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//         builder: (_) => PDFViewer(filePath: file.path,),
-//       ),
-//     );
-//   }
-// }
   void _viewPdf(BuildContext context, File file) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -213,6 +193,8 @@ class GenerateTicket extends StatelessWidget {
               category: category,
               amountPaid: amountPaid,
               numberOfTickets: numberOfTickets,
+              date:date,
+              time:time,
             ),
       ),
     );
@@ -226,7 +208,8 @@ class PDFViewer extends StatelessWidget {
   final String ?category;
   final double? amountPaid;
   final int? numberOfTickets;
-
+  final DateTime? date;
+  final String?time;
   PDFViewer({
     required this.filePath,
     this.tickectNumber,
@@ -235,13 +218,15 @@ class PDFViewer extends StatelessWidget {
     this.category,
     this.amountPaid,
     this.numberOfTickets,
+    this.date,
+    this.time,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Viewer'),
+        title: Text('PDF',style: TextStyle(color: Colors.white),),
       ),
       body: PDFView(
         filePath: filePath,
@@ -251,6 +236,8 @@ class PDFViewer extends StatelessWidget {
         category: category,
         amountPaid: amountPaid,
         numberOfTickets: numberOfTickets,
+        date:date,
+        time:time,
       ),
     );
   }
@@ -262,6 +249,8 @@ class TicketWidget extends StatelessWidget {
   final String category;
   final double amountPaid;
   final int numberOfTickets;
+  final DateTime date;
+  final String time;
   TicketWidget({
     required this.ticketNumber,
     required this.eventer,
@@ -269,6 +258,8 @@ class TicketWidget extends StatelessWidget {
     required this.category,
     required this.amountPaid,
     required this.numberOfTickets,
+    required this.date,
+    required this.time,
   });
   @override
   Widget build(BuildContext context) {
@@ -278,8 +269,10 @@ class TicketWidget extends StatelessWidget {
         Text('Eventer: $eventer'),
         Text('Activity: $activity'),
         Text('Category: $category'),
-        Text('Amount Paid: ₹Rs. ${amountPaid.toStringAsFixed(2)}'),
+        Text('Amount Paid: Rs. ${amountPaid.toStringAsFixed(2)}'),
         Text('Number of Tickets: $numberOfTickets'),
+        Text('Date: ${date.toLocal().toString().split(' ')[0]}'),
+        Text('Time: $time'),
       ],
     );
   }
@@ -292,7 +285,10 @@ class PDFView extends StatefulWidget {
   final String ?category;
   final double? amountPaid;
   final int? numberOfTickets;
-  const PDFView({required this.filePath, this.tickectNumber, Key? key, this.eventer, this.activity,  this.category,  this.amountPaid,  this.numberOfTickets}) : super(key: key);
+  final DateTime? date;
+  final String? time;
+
+  const PDFView({required this.filePath, this.tickectNumber, Key? key, this.eventer, this.activity,  this.category,  this.amountPaid,  this.numberOfTickets, this.date, this.time}) : super(key: key);
 
   @override
   _PDFViewState createState() => _PDFViewState();
@@ -349,12 +345,22 @@ class _PDFViewState extends State<PDFView> {
                 ),
                 pdfWid.SizedBox(height: 8.0),
                 pdfWid.Text(
-                  'Amount Paid: ₹Rs. ${widget.amountPaid}',
+                  'Amount Paid: Rs. ${widget.amountPaid}',
                   style: pdfWid.TextStyle(fontSize: 16),
                 ),
                 pdfWid.SizedBox(height: 8.0),
                 pdfWid.Text(
                   'Number of Tickets: ${widget.numberOfTickets}',
+                  style: pdfWid.TextStyle(fontSize: 16),
+                ),
+                pdfWid.SizedBox(height: 8.0),
+                pdfWid.Text(
+                  'Date: ${widget.date}',
+                  style: pdfWid.TextStyle(fontSize: 16),
+                ),
+                pdfWid.SizedBox(height: 8.0),
+                pdfWid.Text(
+                  'Time: ${widget.time}',
                   style: pdfWid.TextStyle(fontSize: 16),
                 ),
               ],
@@ -366,4 +372,3 @@ class _PDFViewState extends State<PDFView> {
     return pdf.save();
   }
 }
-

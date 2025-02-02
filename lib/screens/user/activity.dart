@@ -1,5 +1,8 @@
 import 'package:aventure/models/activity_model.dart';
+import 'package:aventure/models/eventmanager_model.dart';
 import 'package:aventure/models/reviewrating.dart';
+import 'package:aventure/screens/event_manager/abouteventers.dart';
+import 'package:aventure/screens/user/eventerdetailpage.dart';
 import 'package:aventure/screens/user/generatereview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,48 +23,38 @@ class ActivityPage extends StatefulWidget {
   @override
   State<ActivityPage> createState() => _ActivityPageState();
 }
-
 class _ActivityPageState extends State<ActivityPage> {
   List<GenReview> reviews = [];
   bool _isLoading = true;
-
+  String userImageUrl = "";
   @override
   void initState() {
     super.initState();
     fetchReviews();
   }
 
-  // Future<void> fetchReviews() async {
-  //   try {
-  //     var reviewDocs = await FirebaseFirestore.instance
-  //         .collection('reviews')
-  //         .where('activityTitle', isEqualTo: widget.activity.title)
-  //         .get();
-  //     print("Number of reviews: ${reviewDocs.docs.length}");
-  //     setState(() {
-  //       reviews = reviewDocs.docs
-  //           .map((doc) => GenReview.fromMap(doc.data()))
-  //           .toList();
-  //       _isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     print("Error fetching reviews: $e");
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
   Future<void> fetchReviews() async {
     try {
       var reviewDocs = await FirebaseFirestore.instance
           .collection('reviews')
           .where('activityTitle', isEqualTo: widget.activity.title)
           .get();
-      print("Number of reviews: ${reviewDocs.docs.length}");
+
+      List<GenReview> fetchedReviews = [];
+      for (var doc in reviewDocs.docs) {
+        var reviewData = doc.data();
+        var userDoc = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(reviewData['uid'])
+            .get();
+
+        reviewData['userImageUrl'] = userDoc['imgUrl']; // Add user image URL to review data
+        print("Fetched review: $reviewData"); // Debugging line
+        fetchedReviews.add(GenReview.fromMap(reviewData));
+      }
+
       setState(() {
-        reviews = reviewDocs.docs
-            .map((doc) => GenReview.fromMap(doc.data()))
-            .toList();
+        reviews = fetchedReviews;
         _isLoading = false;
       });
     } catch (e) {
@@ -71,6 +64,7 @@ class _ActivityPageState extends State<ActivityPage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final activity = widget.activity;
@@ -100,15 +94,44 @@ class _ActivityPageState extends State<ActivityPage> {
                     top: 260,
                     left: 220,
                     right: 0,
+                    bottom:0,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: ()async{
+                        try {
+                          var eventerDoc = await FirebaseFirestore.instance
+                              .collection('eventmanager')
+                              .where('companyname', isEqualTo: activity.eventer)
+                              .get();
+
+                          if (eventerDoc.docs.isNotEmpty) {
+                            var eventerData = eventerDoc.docs.first.data();
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CurrentEventManagerDetailsPage(
+                                  companyName: eventerData['companyname'],
+                                  description: eventerData['description'],
+
+                                  phone: eventerData['phone'],
+
+                                ),
+                              ),
+                            );
+                          } else {
+                            print("Eventer not found");
+                          }
+                        } catch (e) {
+                          print("Error fetching eventer details: $e");
+                        }
+                      },
                       child: Text(
-                        "${activity.eventer} Eventers",
+                        "${activity.eventer}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -122,8 +145,8 @@ class _ActivityPageState extends State<ActivityPage> {
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
                 color: Colors.white,
               ),
@@ -139,10 +162,22 @@ class _ActivityPageState extends State<ActivityPage> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Text(
+                  // Text(
+                  //   activity.description!,
+                  //   style: TextStyle(color: Colors.black),
+                  // ),
+
+                  ReadMoreText(
                     activity.description!,
-                    style: TextStyle(color: Colors.black),
+                    trimLines: 2,
+                    colorClickableText: Colors.blue,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: '...Read more',
+                    trimExpandedText: ' Less',
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    moreStyle: TextStyle(fontSize: 14, color: Colors.blue),
                   ),
+
                   SizedBox(height: 15),
                   Text(
                     "Details",
@@ -171,19 +206,19 @@ class _ActivityPageState extends State<ActivityPage> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  InkWell(
-                    // onTap: () {
-                    //   Navigator.pushNamed(context, '/activityreview');
-                    // },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.orange.withOpacity(0.1),
-                      ),
-                      padding: EdgeInsets.all(20),
-                      child: UserReviewCrd(),
-                    ),
-                  ),
+                  // InkWell(
+                  //   // onTap: () {
+                  //   //   Navigator.pushNamed(context, '/activityreview');
+                  //   // },
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(15),
+                  //       color: Colors.orange.withOpacity(0.1),
+                  //     ),
+                  //     padding: EdgeInsets.all(20),
+                  //     child: UserReviewCrd(),
+                  //   ),
+                  // ),
                   _isLoading
                       ? Center(child: CircularProgressIndicator())
                       : ListView.builder(
@@ -314,7 +349,8 @@ class _ActivityPageState extends State<ActivityPage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage("assets/img/profile.png"),
+                        // backgroundImage: AssetImage("assets/img/profile.png"),
+                        backgroundImage: NetworkImage(review.userImageUrl),
                       ),
                       SizedBox(width: 15),
                       Text(
@@ -323,29 +359,18 @@ class _ActivityPageState extends State<ActivityPage> {
                       ),
                     ],
                   ),
-                  PopupMenuButton<String>(
-                    onSelected: (String value) {
-                      if (value == 'share') {
-                        // Implement edit functionality here
-                      }
-                    },
-                    itemBuilder: (BuildContext context) {
-                      return [
-
-                        PopupMenuItem(
-                          value: 'share',
-                          child: Row(
-                            children: [
-                              Icon(Icons.share, color: Colors.black),
-                              SizedBox(width: 8),
-                              Text('Share'),
-                            ],
-                          ),
-                        ),
-                      ];
-                    },
-                    icon: Icon(Icons.more_vert),
-                  ),
+                  // PopupMenuButton<String>(
+                  //   onSelected: (String value) {
+                  //     if (value == 'share') {
+                  //       // Implement edit functionality here
+                  //     }
+                  //   },
+                  //   itemBuilder: (BuildContext context) {
+                  //     return [
+                  //     ];
+                  //   },
+                  //   icon: Icon(Icons.more_vert),
+                  // ),
                 ],
               ),
               SizedBox(height: 15),
@@ -423,6 +448,66 @@ class _ActivityPageState extends State<ActivityPage> {
         return "";
     }
   }
-
-
  }
+
+
+
+
+
+
+class CurrentEventManagerDetailsPage extends StatelessWidget {
+  final String companyName;
+  final String description;
+
+  final String phone;
+
+
+  const CurrentEventManagerDetailsPage({
+    Key? key,
+    required this.companyName,
+    required this.description,
+
+
+    required this.phone,
+
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.orange[100],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('Event Manager Detail'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Text(
+              'Company Name: $companyName',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 10),
+            Text(
+              'Phone: $phone',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+
+
+
+            SizedBox(height: 10),
+            Text(
+              'Description : $description',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

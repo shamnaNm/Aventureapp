@@ -11,6 +11,8 @@ class EventManager {
   final String qualification;
   final String role;
   final int ?status;
+  final String?description;
+  final String? img;
   EventManager({
     this.id,
     required this.email,
@@ -21,6 +23,7 @@ class EventManager {
     required this.qualification,
     required this.role,
      this.status,
+    this.description,this.img,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,7 +37,8 @@ class EventManager {
       'qualification': qualification,
       'role':role,
       'status': status,
-
+      'description':description,
+      'img':img
     };
   }
 
@@ -50,6 +54,8 @@ class EventManager {
       companyname: json['companyname'],
       qualification: json['qualification'],
       status: json['status'],
+      description: json['description'],
+      img: json['img']
     );
   }
 

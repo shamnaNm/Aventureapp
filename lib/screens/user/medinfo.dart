@@ -38,9 +38,6 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
 
   }
   var uid;
-
-
-
   getData() async {
     uid = FirebaseAuth.instance.currentUser!.uid;
     setState(() {});
@@ -65,7 +62,9 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
+
           children: [
+           // Text('(Its optional,you can skip)'),
             TextFormField(
               controller: _bpRateController,
               decoration: InputDecoration(labelText: 'Blood Pressure Rate'),
@@ -123,60 +122,137 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
             )
                 : SizedBox(),
             SizedBox(height: 20),
-
         ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Confirm Booking'),
-                  content: Text('Are you sure you want to save this information?'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Cancel saving
-                      },
-                      child: Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close dialog
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PaymentPage(),
-                            settings: RouteSettings(
-                              arguments: {
-                                'activity': activity,
-                                'selectedDate': selectedDate,
-                                'selectedTime': selectedTime,
-                                'ticketsSelected': ticketsSelected,
-                                'totalAmount': totalAmount,
-                                'medicalInfo': {
-                                  'bpRate': _bpRateController.text,
-                                  'glucoseRate': _glucoseRateController.text,
-                                  'allergies': _allergiesController.text,
-                                  'otherDiseases': _otherDiseasesController.text,
-                                  'hasHeartProblem': _hasHeartProblem,
-                                  'hasAllergies': _hasAllergies,
-                                  'hasDisability': _hasDisability,
-                                },
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text('Confirm'),
-                    ),
-                  ],
+          // onPressed: () {
+          //   showDialog(
+          //     context: context,
+          //     builder: (BuildContext context) {
+          //       return AlertDialog(
+          //         title: Text('Confirm Booking'),
+          //         content: Text('Are you sure you want to save this information?'),
+          //         actions: <Widget>[
+          //           TextButton(
+          //             onPressed: () {
+          //               Navigator.of(context).pop(); // Cancel saving
+          //             },
+          //             child: Text('Cancel'),
+          //           ),
+          //           TextButton(
+          //             onPressed: () {
+          //               Navigator.of(context).pop(); // Close dialog
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                   builder: (context) => PaymentPage(),
+          //                   settings: RouteSettings(
+          //                     arguments: {
+          //                       'activity': activity,
+          //                       'selectedDate': selectedDate,
+          //                       'selectedTime': selectedTime,
+          //                       'ticketsSelected': ticketsSelected,
+          //                       'totalAmount': totalAmount,
+          //                       'medicalInfo': {
+          //                         'bpRate': _bpRateController.text,
+          //                         'glucoseRate': _glucoseRateController.text,
+          //                         'allergies': _allergiesController.text,
+          //                         'otherDiseases': _otherDiseasesController.text,
+          //                         'hasHeartProblem': _hasHeartProblem,
+          //                         'hasAllergies': _hasAllergies,
+          //                         'hasDisability': _hasDisability,
+          //                       },
+          //                     },
+          //                   ),
+          //                 ),
+          //               );
+          //             },
+          //
+          //
+          //
+          //             child: Text('Confirm'),
+          //           ),
+          //         ],
+          //       );
+          //     },
+          //   );
+          // },
+          //
+          // child: Text('Next'),
+
+            onPressed: () {
+              // Check if any condition exists
+              if (_hasHeartProblem || _hasAllergies || _hasDisability || _otherDiseasesController.text.isNotEmpty) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Booking Not Allowed'),
+                      content: Text('You cannot book this activity due to your medical condition.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
                 );
-              },
-            );
-          },
-          child: Text('Save'),
-        ),
-        ],
+              } else {
+                // Proceed to Payment Page if no conditions exist
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Confirm Booking'),
+                      content: Text('Are you sure you want to save this information?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Cancel saving
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close dialog
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentPage(),
+                                settings: RouteSettings(
+                                  arguments: {
+                                    'activity': activity,
+                                    'selectedDate': selectedDate,
+                                    'selectedTime': selectedTime,
+                                    'ticketsSelected': ticketsSelected,
+                                    'totalAmount': totalAmount,
+                                    'medicalInfo': {
+                                      'bpRate': _bpRateController.text,
+                                      'glucoseRate': _glucoseRateController.text,
+                                      'allergies': _allergiesController.text,
+                                      'otherDiseases': _otherDiseasesController.text,
+                                      'hasHeartProblem': _hasHeartProblem,
+                                      'hasAllergies': _hasAllergies,
+                                      'hasDisability': _hasDisability,
+                                    },
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text('Confirm'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            child: Text('Next'),
+          ),
+
+          ],
         ),
       ),
     );

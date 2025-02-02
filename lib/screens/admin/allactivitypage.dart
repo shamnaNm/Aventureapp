@@ -35,7 +35,7 @@ class AllActivityListPage extends StatelessWidget {
                     border: Border.all(color: Colors.orange)
                   ),
                   child: ListTile(
-                    leading: Image.network(activity['image']!),
+                    leading: Image.network(activity['image']),
                     title: Text(activity['title']),
                     subtitle: Text(activity['description']),
                     onTap: () {

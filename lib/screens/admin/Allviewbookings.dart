@@ -55,7 +55,6 @@ class AllBookingListPage extends StatelessWidget {
     );
   }
 }
-
 class BookingDetailPage extends StatelessWidget {
   final Map<String, dynamic> booking;
   final String bookingId;
@@ -85,6 +84,8 @@ class BookingDetailPage extends StatelessWidget {
             Text('Eventer: ${booking['eventer']}'),
             Text('User ID: ${booking['userid']}'),
             Text('Status: ${booking['status']}'),
+            Text('Payment mode: ${booking['paymentMethod']}'),
+
           ],
         ),
       ),

@@ -5,8 +5,11 @@ class Ticket {
   final String category;
   final double amountPaid;
   final int numberOfTickets;
-
+  final DateTime? date;
+ final String? time;
   Ticket({
+       this.date,
+       this.time,
     required this.ticketNumber,
     required this.eventer,
     required this.activity,
@@ -23,6 +26,8 @@ class Ticket {
       category: json['category'] ?? '',
       amountPaid: json['amountPaid'] ?? 0.0,
       numberOfTickets: json['numberOfTickets'] ?? 0,
+      date: json['date']?.toDate()?? 0, // Assuming `date` is stored as a Firestore timestamp
+      time: json['time']?? 0,
     );
   }
 
@@ -34,6 +39,8 @@ class Ticket {
       'category': category,
       'amountPaid': amountPaid,
       'numberOfTickets': numberOfTickets,
+      'date':date,
+      'time':time,
     };
   }
 }

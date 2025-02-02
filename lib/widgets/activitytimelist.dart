@@ -25,9 +25,35 @@
 //   void _initializeSchedules() {
 //     if (widget.activity.schedules != null) {
 //       setState(() {
-//         schedules = List<Map<String, dynamic>>.from(widget.activity.schedules!);
+//         schedules = widget.activity.schedules!.map((schedule) {
+//           return {
+//             'time': schedule['time'],
+//             'tickets': schedule['tickets'],
+//             'initialTickets': schedule['tickets'],
+//           };
+//         }).toList();
 //       });
 //     }
+//   }
+//   // void _reduceTicketCount(String time) {
+//   //   setState(() {
+//   //     for (var schedule in schedules) {
+//   //       if (schedule['time'] == time && schedule['tickets'] > 0) {
+//   //         schedule['tickets']--;
+//   //         break;
+//   //       }
+//   //     }
+//   //   });
+//   // }
+//   void _restoreTicketCount(String time) {
+//     setState(() {
+//       for (var schedule in schedules) {
+//         if (schedule['time'] == time) {
+//           schedule['tickets'] = schedule['initialTickets'];
+//           break;
+//         }
+//       }
+//     });
 //   }
 //
 //   @override
@@ -50,10 +76,9 @@
 //       },
 //     );
 //   }
-//
 //   Widget _buildActivityTile(IconData icon, String time, String availability) {
 //     return RadioListTile<String>(
-//       tileColor: Colors.orange.withOpacity(0.1),
+//       tileColor: Colors.orange.withOpacity(0.2),
 //       title: Row(
 //         children: [
 //           Icon(icon),
@@ -67,11 +92,15 @@
 //       groupValue: _selectedTime,
 //       onChanged: (String? value) {
 //         setState(() {
+//           if (_selectedTime != null) {
+//             _restoreTicketCount(_selectedTime!);
+//           }
 //           _selectedTime = value;
+//           if (value != null) {
+//             //_reduceTicketCount(value);
+//             widget.onTimeSelected(value);
+//           }
 //         });
-//         if (value != null) {
-//           widget.onTimeSelected(value);
-//         }
 //       },
 //       activeColor: Colors.orange, // Adjust the color of the selected radio button
 //       controlAffinity: ListTileControlAffinity.trailing, // Align radio button to the trailing edge
@@ -83,9 +112,16 @@ import '../models/activity_model.dart';
 
 class ActivityListWidget extends StatefulWidget {
   final ActivityModel activity;
+  final List<Map<String, dynamic>> schedules;
   final Function(String) onTimeSelected;
+  final Function(String) getAvailableTickets;
 
-  ActivityListWidget({required this.activity, required this.onTimeSelected});
+  ActivityListWidget({
+    required this.activity,
+    required this.schedules,
+    required this.onTimeSelected,
+    required this.getAvailableTickets,
+  });
 
   @override
   _ActivityListWidgetState createState() => _ActivityListWidgetState();
@@ -93,42 +129,10 @@ class ActivityListWidget extends StatefulWidget {
 
 class _ActivityListWidgetState extends State<ActivityListWidget> {
   String? _selectedTime;
-  List<Map<String, dynamic>> schedules = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeSchedules();
-  }
-
-  void _initializeSchedules() {
-    if (widget.activity.schedules != null) {
-      setState(() {
-        schedules = widget.activity.schedules!.map((schedule) {
-          return {
-            'time': schedule['time'],
-            'tickets': schedule['tickets'],
-            'initialTickets': schedule['tickets'],
-          };
-        }).toList();
-      });
-    }
-  }
-
-  void _reduceTicketCount(String time) {
-    setState(() {
-      for (var schedule in schedules) {
-        if (schedule['time'] == time && schedule['tickets'] > 0) {
-          schedule['tickets']--;
-          break;
-        }
-      }
-    });
-  }
 
   void _restoreTicketCount(String time) {
     setState(() {
-      for (var schedule in schedules) {
+      for (var schedule in widget.schedules) {
         if (schedule['time'] == time) {
           schedule['tickets'] = schedule['initialTickets'];
           break;
@@ -141,15 +145,15 @@ class _ActivityListWidgetState extends State<ActivityListWidget> {
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: schedules.length,
+      itemCount: widget.schedules.length,
       itemBuilder: (context, index) {
-        final schedule = schedules[index];
+        final schedule = widget.schedules[index];
         return Column(
           children: [
             _buildActivityTile(
               Icons.access_time,
               schedule['time'],
-              '${schedule['tickets']} tickets available',
+              '${widget.getAvailableTickets(schedule['time'])} tickets available',
             ),
             SizedBox(height: 5),
           ],
@@ -160,7 +164,8 @@ class _ActivityListWidgetState extends State<ActivityListWidget> {
 
   Widget _buildActivityTile(IconData icon, String time, String availability) {
     return RadioListTile<String>(
-      tileColor: Colors.orange.withOpacity(0.1),
+
+      tileColor: Colors.orange.withOpacity(0.2),
       title: Row(
         children: [
           Icon(icon),
@@ -179,7 +184,6 @@ class _ActivityListWidgetState extends State<ActivityListWidget> {
           }
           _selectedTime = value;
           if (value != null) {
-            _reduceTicketCount(value);
             widget.onTimeSelected(value);
           }
         });

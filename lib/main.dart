@@ -1,15 +1,23 @@
 import 'package:aventure/models/activity_model.dart';
 import 'package:aventure/models/booking_model.dart';
+import 'package:aventure/models/eventmanager_model.dart';
 import 'package:aventure/screens/admin/Allviewbookings.dart';
 import 'package:aventure/screens/admin/add_catrogry.dart';
 import 'package:aventure/screens/admin/allactivitypage.dart';
 import 'package:aventure/screens/admin/dashboard.dart';
 import 'package:aventure/screens/admin/eventmanager_page.dart';
+import 'package:aventure/screens/admin/generatereports.dart';
 import 'package:aventure/screens/admin/notification.dart';
+import 'package:aventure/screens/admin/paymentchart.dart';
+import 'package:aventure/screens/admin/paymentdetail.dart';
 import 'package:aventure/screens/admin/users_page.dart';
+import 'package:aventure/screens/common/forgotpage.dart';
 import 'package:aventure/screens/event_manager/Addbannerpage.dart';
+import 'package:aventure/screens/event_manager/abouteventers.dart';
 import 'package:aventure/screens/event_manager/addactivity.dart';
 import 'package:aventure/screens/event_manager/allcreatedactivity.dart';
+import 'package:aventure/screens/event_manager/cerificategenerate.dart';
+import 'package:aventure/screens/event_manager/certificatetabs.dart';
 import 'package:aventure/screens/event_manager/event_home.dart';
 import 'package:aventure/screens/event_manager/event_reg.dart';
 import 'package:aventure/banner/offer_page.dart';
@@ -18,8 +26,12 @@ import 'package:aventure/screens/event_manager/eventmanager_profile.dart';
 import 'package:aventure/screens/event_manager/gen_tickets.dart';
 import 'package:aventure/screens/event_manager/bookinglist.dart';
 import 'package:aventure/screens/event_manager/listtickets.dart';
+import 'package:aventure/screens/event_manager/refundrequests.dart';
 import 'package:aventure/screens/user/mybookings.dart';
 import 'package:aventure/screens/user/mypayments.dart';
+import 'package:aventure/screens/event_manager/mytickets.dart';
+import 'package:aventure/screens/user/notification.dart';
+import 'package:aventure/screens/user/refundusernoti.dart';
 import 'package:aventure/screens/user/tickets.dart';
 import 'package:aventure/screens/user/categorypage.dart';
 import 'package:aventure/screens/user/history.dart';
@@ -36,7 +48,10 @@ import 'package:aventure/screens/user/home_page.dart';
 import 'package:aventure/screens/user/personal_info.dart';
 import 'package:aventure/screens/user/profile.dart';
 import 'package:aventure/screens/user/user_register_page.dart';
+import 'package:aventure/screens/user/usercertificates.dart';
+import 'package:aventure/screens/user/userhistorypage.dart';
 import 'package:aventure/screens/user/userreviews.dart';
+import 'package:aventure/screens/user/viewusertickets.dart';
 import 'package:flutter/material.dart';
 import 'package:aventure/screens/common/login_page.dart';
 import 'package:provider/provider.dart';
@@ -67,25 +82,33 @@ class MyApp extends StatelessWidget {
         '/admin': (context) => AdminDashboard(),
         '/listactivity': (context) => AllActivityListPage(),
         '/listbooking': (context) => AllBookingListPage(),
-
         '/userpage': (context) => UserPage(),
+        '/paymentdetail': (context) => PaymentListScreen(),
         '/eventmanagerpage': (context) => EventManagerPage(),
         '/notifyaccess': (context) => NotificationAccess(),
+        '/reports': (context) => GenerateReports(),
         '/eventhome': (context) => EventManagerHome(),
         '/addbanners': (context) => AddBannerPage(),
         '/addactivity': (context) => ActivityManager(),
         '/allactivity': (context) => AllCreatedActivitiesPage(),
         '/eventerprofile': (context) => EventersProfile(),
+        '/abouteventer': (context) => EventManagerProfilePage(),
+        '/refund': (context) => RefundRequestList(),
+        '/certificate': (context) => CertificateTab(),
         '/viewbookings': (context) => BookingsPage(),
         '/navigation': (context) => BottomNavigationPage(),
         '/home': (context) => HomePage(),
         '/explore': (context) => ExplorePage(),
         '/category': (context) => CategoriesPage(),
         '/tickets': (context) =>PdfListPage(),
+        '/history': (context) =>UserHistoryPage(userId: '',),
         '/profile': (context) => ProfilePage(),
         '/personalinfo': (context) => PersonalInfo(),
         '/privacy': (context) => PrivacyPolicyPage(),
         '/termc': (context) => TermsConditionsPage(),
+        '/forgot': (context) => ForgotPage(),
+        '/notificition': (context) => CombinedPage(),
+        '/refundnotificition': (context) => UserNotificationPage(refund: {}),
         '/reviewuser': (context) =>  UserReviewsPage(),
         '/activity1': (context) => ActivityPage(
               activity: ActivityModel(),
@@ -100,7 +123,11 @@ class MyApp extends StatelessWidget {
         '/activityreview': (context) => ActivityReviewPage(),
         '/categorymanagement': (context) => CategoryManager(),
         '/bookinglist': (context) => BookingsPage(),
-        '/mybookings': (context) => MyBookingList(),'/mypayments': (context) => PaymentHistoryPage(),
+        '/ticketlist':(context)=>UserTicketsPage(userid: '',),
+        '/mybookings': (context) => MyBookingList(),
+        '/mycertificate': (context) => UserCertificatesPage(),
+        '/mytickets': (context) =>TicketListScreen(),
+        '/mypayments': (context) => PaymentHistoryPage(),
         '/generatereview': (context) => GenerateReview(activityTitle: '',),
       },
       debugShowCheckedModeBanner: false,

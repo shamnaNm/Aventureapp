@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aventure/models/category_model.dart';
+import 'package:aventure/screens/event_manager/activitynotifiction.dart';
 import 'package:aventure/services/category_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -259,7 +260,23 @@ class _ActivityManagerState extends State<ActivityManager> {
                           controller: _titleController,
                           decoration: InputDecoration(
                             labelText: 'Title',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
+
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a title';
@@ -267,10 +284,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             return null;
                           },
                         ),
+                        SizedBox(height: 5,),
                         TextFormField(
                           controller: _locationController,
                           decoration: InputDecoration(
                             labelText: 'Location',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -278,11 +312,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _priceController,
                           decoration: InputDecoration(
                             labelText: 'Price in Rupees',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -294,11 +344,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _durationController,
                           decoration: InputDecoration(
                             labelText: 'Duration in Hours',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -306,11 +372,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _weightController,
                           decoration: InputDecoration(
                             labelText: 'Restricted Weight',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -318,11 +400,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
                             labelText: 'Description',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -330,11 +428,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _eventerController,
                           decoration: InputDecoration(
                             labelText: 'Eventer Name/Company Name',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -342,11 +456,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _sealevelController,
                           decoration: InputDecoration(
                             labelText: 'Height above Sea Level',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -354,12 +484,28 @@ class _ActivityManagerState extends State<ActivityManager> {
                             }
                             return null;
                           },
-                        ),
-                        SizedBox(height: 10),
+                        ),SizedBox(height: 5,),
+
                         TextFormField(
                           controller: _scheduleTimeController,
                           decoration: InputDecoration(
                             labelText: 'Schedule Time',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           // validator: (value) {
                           //   if (value == null || value.isEmpty) {
@@ -367,11 +513,27 @@ class _ActivityManagerState extends State<ActivityManager> {
                           //   }
                           //   return null;
                           // },
-                        ),
+                        ),SizedBox(height: 5,),
                         TextFormField(
                           controller: _ticketsController,
                           decoration: InputDecoration(
                             labelText: 'Number of Tickets',
+
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey[300]!,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.orange,
+                                width: 1.2,
+                              ),
+                            ),
+
                           ),
                           keyboardType: TextInputType.number,
                          // validator: (value) {

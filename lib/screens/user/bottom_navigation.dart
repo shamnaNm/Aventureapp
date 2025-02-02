@@ -1,5 +1,7 @@
 
+import 'package:aventure/screens/user/notification.dart';
 import 'package:aventure/screens/user/profile.dart';
+import 'package:aventure/screens/user/usercertificates.dart';
 import 'package:aventure/screens/user/wishlisteditem.dart';
 import 'package:aventure/services/auth_services.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     HomePage(),
     ExplorePage(),
     ProfilePage(),
-    WishlistPage()
+    WishlistPage(),
+    UserCertificatesPage(),
 
   ];
 
@@ -54,6 +57,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
                 BottomNavigationBarItem(icon: Icon(Icons.explore),label: "Explore", backgroundColor: Colors.orange,),
                 BottomNavigationBarItem(icon: Icon(Icons.person),label: "Profile", backgroundColor: Colors.orange,),
                 BottomNavigationBarItem(icon: Icon(Icons.favorite_border),label: "wish", backgroundColor: Colors.orange,),
+                BottomNavigationBarItem(icon: Icon(Icons.receipt),label: "Certificates", backgroundColor: Colors.orange,),
               ],
 
             ),
